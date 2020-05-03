@@ -1,0 +1,25 @@
+{
+  "name": "pki-lab7",
+  "version": "1.0.0",
+  "description": "pki webapp",
+  "main": "app.js",
+  "scripts": {
+    "test": "xyz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ard2148810/pki-lab7.git"
+  },
+  "keywords": [
+    "pki"
+  ],
+  "author": "Adrian",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ard2148810/pki-lab7/issues"
+  },
+  "homepage": "https://github.com/Ard2148810/pki-lab7#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
