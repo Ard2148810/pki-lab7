@@ -198,3 +198,5 @@ temp/
 
 .DS_Store
 /*.env
+
+run
