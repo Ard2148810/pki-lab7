@@ -14,7 +14,8 @@
   "homepage": "https://github.com/Ard2148810/pki-lab7#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "googleapis": "^49.0.0"
+    "googleapis": "^49.0.0",
+    "pg": "^8.0.3"
   },
   "engines": {
     "node": "13.13"

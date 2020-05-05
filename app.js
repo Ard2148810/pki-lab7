@@ -1,7 +1,13 @@
 const { google } = require('googleapis');
+const Pool = require('pg').Pool
+
 var express = require('express');
 var app = express();
 
+
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL
+})
 
 app.use(express.static('static'));
 
@@ -30,9 +36,23 @@ app.get('/', (req, res) => {
                 ' <img src="', result.data.picture,
                 '"height="23" width="23">',
                 '<br><a href="/logout">Click here to logout</a>'));
+            getUsers();
         });
     }
 });
+
+const getUsers = (request, response) => {
+    console.log('Pobieram dane ...');
+    pool.query('SELECT * FROM public."users"', (error, res) => {
+        if (error) {
+            throw error
+        }
+        console.log('Dostałem ...');
+        for (let row of res.rows) {
+            console.log(JSON.stringify(row));
+        }
+    })
+}
 
 app.get('/logout', (req, res) => {
     console.log('Loggin out');
