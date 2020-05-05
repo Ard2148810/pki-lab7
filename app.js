@@ -1,8 +1,9 @@
 const { google } = require('googleapis');
 const Pool = require('pg').Pool
-
+var path = require('path');
 var express = require('express');
 var app = express();
+
 
 
 const pool = new Pool({
@@ -19,40 +20,9 @@ const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_U
 var authed = false;
 
 app.get('/', (req, res) => {
-    if (!authed) {
-        console.log("Not logged in");
-        res.send('<a href="/login">Click here to login</a>');
-    } else {
-        console.log("Logged in");
-        const oauth2 = google.oauth2({ auth: oAuth2Client, version: 'v2' });
-        oauth2.userinfo.v2.me.get(function (err, result) {
-            if(err) {
-                console.log('Błąd: ' + err);
-            } else {
-                loggedUser = result.data.name;
-                console.log(loggedUser);
-            }
-            res.send('Logged in: '.concat(loggedUser,
-                ' <img src="', result.data.picture,
-                '"height="23" width="23">',
-                '<br><a href="/logout">Click here to logout</a>'));
-            getUsers();
-        });
-    }
+    console.log(__dirname + '/static/index.html');
+    res.sendFile(path.join(__dirname + '/static/index.html'));
 });
-
-const getUsers = (request, response) => {
-    console.log('Pobieram dane ...');
-    pool.query('SELECT * FROM public."users"', (error, res) => {
-        if (error) {
-            throw error
-        }
-        console.log('Dostałem ...');
-        for (let row of res.rows) {
-            console.log(JSON.stringify(row));
-        }
-    })
-}
 
 app.get('/logout', (req, res) => {
     console.log('Loggin out');
@@ -74,6 +44,23 @@ app.get('/login', (req, res) => {
     }
 });
 
+app.get('/profile', (req, res) =>{
+   if(!authed) {
+       res.send('Not logged in. <a class="btn btn-primary" href="/login">Click here to login</a>');
+   } else {
+       const oauth2 = google.oauth2({ auth: oAuth2Client, version: 'v2' });
+       oauth2.userinfo.v2.me.get(function (err, result) {
+           if(err) {
+               console.log('Błąd: ' + err);
+           }
+           res.send('Logged in: ' + result.data.name +
+                    ' <img src="' + result.data.picture +
+                    '"height="23" width="23">' +
+                    '<br><br><a class="btn btn-primary" href="/logout">Click here to logout</a>');
+       });
+   }
+});
+
 app.get('/auth/google/callback', function (req, res) {
     const code = req.query.code
     if (code) {
@@ -89,6 +76,20 @@ app.get('/auth/google/callback', function (req, res) {
                 res.redirect('/')
             }
         });
+    }
+});
+
+app.get('/api/users', (request, response) => {
+    if(!authed) {
+        response.json(null);
+    } else {
+        pool.query('SELECT * FROM public."users"', (error, res) => {
+
+            if(error) {
+                throw error;
+            }
+            response.json(res);
+        })
     }
 });
 

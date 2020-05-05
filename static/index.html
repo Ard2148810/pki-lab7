@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body style="margin: 15px">
+    <h1>My App</h1>
+    <div id="profile" style="margin: 5px">
+    </div>
+    <script>
+        $.get( "/profile", function(data) {
+            $( "#profile" ).html( data );
+        });
+    </script>
+    <br>
+    <table class="table" id="users">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Counter</th>
+            <th>Last visit</th>
+            <th>Joined</th>
+        </tr>
+    </table>
+    <script>
+        $.getJSON('/api/users', function(data) {
+            var tbl_body = document.createElement("tbody");
+            $.each(data.rows, function () {
+                var tbl_row = tbl_body.insertRow();
+                $.each(this, function (k, v) {
+                    var cell = tbl_row.insertCell();
+                    cell.appendChild(document.createTextNode(v.toString()));
+                });
+            });
+            $("#users").append(tbl_body);   //DOM table doesn't have .appendChild
+        });
+    </script>
+</body>
+</html>
+
